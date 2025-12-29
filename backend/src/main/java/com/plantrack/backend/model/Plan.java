@@ -1,6 +1,7 @@
 package com.plantrack.backend.model;
 
 import jakarta.persistence.*;
+import jakarta.validation.constraints.*; // Import for validation
 import java.time.LocalDateTime;
 
 @Entity
@@ -12,8 +13,10 @@ public class Plan {
     private Long planId;
 
     @Column(nullable = false)
+    @NotBlank(message = "Title is required") // <--- Validation
     private String title;
 
+    @Size(max = 500, message = "Description cannot exceed 500 characters")
     private String description;
 
     @Enumerated(EnumType.STRING)
@@ -25,16 +28,13 @@ public class Plan {
     private LocalDateTime startDate;
     private LocalDateTime endDate;
 
-    // --- SYSTEM DESIGN KEY: FOREIGN KEY RELATIONSHIP ---
-    // Many Plans belong to One User
     @ManyToOne 
-    @JoinColumn(name = "user_id", nullable = false) // This creates the 'user_id' column in MySQL
+    @JoinColumn(name = "user_id", nullable = false) 
     private User user;
 
-    // --- CONSTRUCTORS ---
     public Plan() {}
 
-    // --- GETTERS AND SETTERS ---
+    // --- Getters and Setters ---
     public Long getPlanId() { return planId; }
     public void setPlanId(Long planId) { this.planId = planId; }
 

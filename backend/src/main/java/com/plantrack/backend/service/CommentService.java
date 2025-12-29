@@ -9,7 +9,6 @@ import com.plantrack.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.time.LocalDateTime;
 import java.util.List;
 
 @Service
@@ -33,7 +32,9 @@ public class CommentService {
 
         comment.setPlan(plan);
         comment.setUser(user);
-        comment.setCreatedDate(LocalDateTime.now());
+        
+        // DELETED LINE: comment.setCreatedDate(...) 
+        // Reason: JPA Auditing now handles this automatically.
 
         return commentRepository.save(comment);
     }

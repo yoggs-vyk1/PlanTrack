@@ -1,28 +1,39 @@
-package com.plantrack.backend.controller; // Make sure this matches your folder structure
+package com.plantrack.backend.controller;
 
 import com.plantrack.backend.model.User;
-import com.plantrack.backend.repository.UserRepository;
+import com.plantrack.backend.service.UserService;
+import jakarta.validation.Valid;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
 import java.util.List;
 
-@RestController // <--- 1. CRITICAL: Tells Spring this class handles web requests
-@RequestMapping("/users") // <--- 2. CRITICAL: Sets the base URL to localhost:8080/users
+@RestController
+@RequestMapping("/api/users")
 public class UserController {
 
     @Autowired
-    private UserRepository userRepository;
+    private UserService userService;
 
-    // This handles the POST request you are trying to send
     @PostMapping
-    public User createUser(@RequestBody User user) {
-        return userRepository.save(user);
+    public User createUser(@Valid @RequestBody User user) {
+        return userService.createUser(user);
     }
 
-    // This handles the GET request to see all users
     @GetMapping
     public List<User> getAllUsers() {
-        return userRepository.findAll();
+        return userService.getAllUsers();
+    }
+
+    @GetMapping("/{id}")
+    public User getUserById(@PathVariable Long id) {
+        // This now works because UserService returns 'User', not 'Optional<User>'
+        return userService.getUserById(id);
+    }
+
+    @DeleteMapping("/{id}")
+    public void deleteUser(@PathVariable Long id) {
+        // This now works because we added deleteUser() to the Service
+        userService.deleteUser(id);
     }
 }

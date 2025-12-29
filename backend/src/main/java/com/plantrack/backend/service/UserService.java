@@ -1,13 +1,11 @@
 package com.plantrack.backend.service;
 
-import java.util.List;
-import java.util.Optional;
-
+import com.plantrack.backend.model.User;
+import com.plantrack.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import com.plantrack.backend.model.User;
-import com.plantrack.backend.repository.UserRepository;
+import java.util.List;
 
 @Service
 public class UserService {
@@ -23,7 +21,14 @@ public class UserService {
         return userRepository.findAll();
     }
 
-    public Optional<User> getUserById(Long id) {
-        return userRepository.findById(id);
+    // UPDATED: Return User directly, not Optional
+    public User getUserById(Long id) {
+        return userRepository.findById(id)
+                .orElseThrow(() -> new RuntimeException("User not found with id: " + id));
+    }
+
+    // ADDED: Missing delete method
+    public void deleteUser(Long id) {
+        userRepository.deleteById(id);
     }
 }

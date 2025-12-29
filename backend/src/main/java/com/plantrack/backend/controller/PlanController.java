@@ -2,6 +2,7 @@ package com.plantrack.backend.controller;
 
 import com.plantrack.backend.model.Plan;
 import com.plantrack.backend.service.PlanService;
+import jakarta.validation.Valid; // Import
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.web.bind.annotation.*;
 
@@ -12,10 +13,10 @@ import java.util.List;
 public class PlanController {
 
     @Autowired
-    private PlanService planService; // We now talk to Service, NOT Repository
+    private PlanService planService;
 
     @PostMapping("/users/{userId}/plans")
-    public Plan createPlan(@PathVariable Long userId, @RequestBody Plan plan) {
+    public Plan createPlan(@PathVariable Long userId, @Valid @RequestBody Plan plan) { // <--- Added @Valid
         return planService.createPlan(userId, plan);
     }
 
