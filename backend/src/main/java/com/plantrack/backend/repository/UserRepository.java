@@ -7,5 +7,6 @@ import com.plantrack.backend.model.User;
 
 @Repository
 public interface UserRepository extends JpaRepository<User, Long> {
-    // We can add custom queries here later, e.g., findByEmail(String email)
+    // Add this lookup method
+    User findByEmail(String email);
 }

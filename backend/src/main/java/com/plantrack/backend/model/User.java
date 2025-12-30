@@ -1,7 +1,17 @@
 package com.plantrack.backend.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.*; 
+import com.fasterxml.jackson.annotation.JsonProperty;
+
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.GeneratedValue; // Import Validation
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.Email;
+import jakarta.validation.constraints.NotBlank;
+import jakarta.validation.constraints.Pattern;
+import jakarta.validation.constraints.Size;
 
 @Entity
 @Table(name = "users")
@@ -12,22 +22,27 @@ public class User {
     private Long userId;
 
     @Column(nullable = false)
-    @NotBlank(message = "Name is required") 
+    @NotBlank(message = "Name is required")
     @Size(min = 2, max = 50, message = "Name must be between 2 and 50 characters")
     private String name;
 
     @Column(nullable = false, unique = true)
-    @NotBlank(message = "Email is required") 
-    @Email(message = "Email should be valid") 
+    @NotBlank(message = "Email is required")
+    @Email(message = "Email should be valid")
     private String email;
 
+    @Column(nullable = false)
+    // --- NEW SECURITY RULE ---
+    @Pattern(
+        regexp = "^(?=.*[0-9])(?=.*[a-z])(?=.*[A-Z])(?=.*[@#$%^&+=!])(?=\\S+$).{8,}$",
+        message = "Password must be at least 8 chars, contain 1 digit, 1 lower, 1 upper, and 1 special char (@#$%^&+=!)"
+    )
+    @JsonProperty(access = JsonProperty.Access.WRITE_ONLY)
+    private String password;
+
     private String department;
-
-    // FIX: Removed @Enumerated because this is a String
-    private String role; 
-
-    // FIX: Removed @Enumerated because this is a String
-    private String status; 
+    private String role;
+    private String status;
 
     public User() {}
 
@@ -40,6 +55,9 @@ public class User {
 
     public String getEmail() { return email; }
     public void setEmail(String email) { this.email = email; }
+
+    public String getPassword() { return password; }
+    public void setPassword(String password) { this.password = password; }
 
     public String getDepartment() { return department; }
     public void setDepartment(String department) { this.department = department; }

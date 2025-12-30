@@ -1,10 +1,10 @@
 package com.plantrack.backend.service;
 
 import com.plantrack.backend.model.Comment;
-import com.plantrack.backend.model.Plan;
+import com.plantrack.backend.model.Initiative;
 import com.plantrack.backend.model.User;
 import com.plantrack.backend.repository.CommentRepository;
-import com.plantrack.backend.repository.PlanRepository;
+import com.plantrack.backend.repository.InitiativeRepository;
 import com.plantrack.backend.repository.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -18,28 +18,30 @@ public class CommentService {
     private CommentRepository commentRepository;
 
     @Autowired
-    private PlanRepository planRepository;
+    private InitiativeRepository initiativeRepository; // Changed from PlanRepository
 
     @Autowired
     private UserRepository userRepository;
 
-    public Comment addComment(Long planId, Long userId, Comment comment) {
-        Plan plan = planRepository.findById(planId)
-                .orElseThrow(() -> new RuntimeException("Plan not found"));
+    public Comment addComment(Long initiativeId, Long userId, Comment comment) {
+        // 1. Find the Initiative
+        Initiative initiative = initiativeRepository.findById(initiativeId)
+                .orElseThrow(() -> new RuntimeException("Initiative not found"));
         
+        // 2. Find the User
         User user = userRepository.findById(userId)
                 .orElseThrow(() -> new RuntimeException("User not found"));
 
-        comment.setPlan(plan);
+        // 3. Link them
+        comment.setInitiative(initiative);
         comment.setUser(user);
         
-        // DELETED LINE: comment.setCreatedDate(...) 
-        // Reason: JPA Auditing now handles this automatically.
+        // Note: Date is handled automatically by @CreatedDate now
 
         return commentRepository.save(comment);
     }
 
-    public List<Comment> getCommentsByPlan(Long planId) {
-        return commentRepository.findByPlanPlanId(planId);
+    public List<Comment> getCommentsByInitiative(Long initiativeId) {
+        return commentRepository.findByInitiativeInitiativeId(initiativeId);
     }
 }

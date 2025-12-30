@@ -1,15 +1,24 @@
 package com.plantrack.backend.model;
 
-import jakarta.persistence.*;
-import jakarta.validation.constraints.NotBlank;
+import java.time.LocalDateTime;
+
 import org.springframework.data.annotation.CreatedDate;
 import org.springframework.data.jpa.domain.support.AuditingEntityListener;
 
-import java.time.LocalDateTime;
+import jakarta.persistence.Column;
+import jakarta.persistence.Entity;
+import jakarta.persistence.EntityListeners;
+import jakarta.persistence.GeneratedValue;
+import jakarta.persistence.GenerationType;
+import jakarta.persistence.Id;
+import jakarta.persistence.JoinColumn;
+import jakarta.persistence.ManyToOne;
+import jakarta.persistence.Table;
+import jakarta.validation.constraints.NotBlank;
 
 @Entity
 @Table(name = "comments")
-@EntityListeners(AuditingEntityListener.class) // <--- 1. Listen for save events
+@EntityListeners(AuditingEntityListener.class)
 public class Comment {
 
     @Id
@@ -20,7 +29,7 @@ public class Comment {
     @NotBlank(message = "Comment text cannot be empty")
     private String text;
 
-    @CreatedDate // <--- 2. Automatically sets the date when saved
+    @CreatedDate
     @Column(nullable = false, updatable = false)
     private LocalDateTime createdDate;
 
@@ -28,15 +37,14 @@ public class Comment {
     @JoinColumn(name = "user_id", nullable = false)
     private User user;
 
+    // --- CHANGED: Now linked to Initiative, not Plan ---
     @ManyToOne
-    @JoinColumn(name = "plan_id", nullable = false)
-    private Plan plan;
+    @JoinColumn(name = "initiative_id", nullable = false)
+    private Initiative initiative;
 
-    public Comment() {
-        // Constructor is empty now! Date is handled automatically.
-    }
+    public Comment() {}
 
-    // --- Getters and Setters ---
+    // Getters and Setters
     public Long getCommentId() { return commentId; }
     public void setCommentId(Long commentId) { this.commentId = commentId; }
 
@@ -44,11 +52,10 @@ public class Comment {
     public void setText(String text) { this.text = text; }
 
     public LocalDateTime getCreatedDate() { return createdDate; }
-    // No setter needed for createdDate usually, but you can keep it if you want
 
     public User getUser() { return user; }
     public void setUser(User user) { this.user = user; }
 
-    public Plan getPlan() { return plan; }
-    public void setPlan(Plan plan) { this.plan = plan; }
+    public Initiative getInitiative() { return initiative; }
+    public void setInitiative(Initiative initiative) { this.initiative = initiative; }
 }
